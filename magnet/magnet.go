@@ -1,12 +1,8 @@
 package magnet
 
 import (
-	"fmt"
-	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	resources "github.com/raa0121/magnet/magnet/internal"
 )
 
 const (
@@ -19,47 +15,73 @@ const (
 	playerFrameNum = 8
 )
 
-type Magnet struct{
-	frame int
-	backgroundX float64
+type Game struct{
+	SceneType
+	Title
+	HowTo
+	Battle
+	GameOver
 }
 
-func (m *Magnet) Update() error {
-	m.frame++
-	m.backgroundX -= 4
-	if m.backgroundX == -float64(ScreenWidth) {
-		m.backgroundX = 0
+type Point struct {
+	X, Y float64
+}
+
+func (g *Game) Update() error {
+	switch g.SceneType.Type {
+	case SceneTitle:
+		g.Title.Update(g)
+	case SceneHowTo:
+		g.HowTo.Update(g)
+	case SceneBattle:
+		g.Battle.Update(g)
+	case SceneGameOver:
+		g.GameOver.Update(g)
 	}
 	return nil
 }
 
-func (m *Magnet) Draw(screen *ebiten.Image) {
-	bgFirstOption := &ebiten.DrawImageOptions{}
-	bgSecondOption := &ebiten.DrawImageOptions{}
-	bgFirstOption.GeoM.Translate(m.backgroundX, 0)
-	bgSecondOption.GeoM.Translate(m.backgroundX + float64(ScreenWidth), 0)
-	screen.DrawImage(resources.BackgroundImage, bgFirstOption)
-	screen.DrawImage(resources.BackgroundImage, bgSecondOption)
-
-	playerOption := &ebiten.DrawImageOptions{}
-	playerOption.GeoM.Translate(-float64(playerFrameWidth)/2, -float64(playerFrameHeight)/2)
-	playerOption.GeoM.Translate(ScreenWidth/2, ScreenHeight/2)
-
-	i := (m.frame / 5) % playerFrameNum
-	sx, sy := i*playerFrameWidth, playerFrame0Y
-	screen.DrawImage(
-		resources.PlayerImage.SubImage(
-			image.Rect(sx, sy, sx+playerFrameWidth, sy+playerFrameHeight),
-		).(*ebiten.Image),
-		playerOption,
-	)
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %f", ebiten.CurrentFPS()))
+func (g *Game) Draw(screen *ebiten.Image) {
+	switch g.SceneType.Type {
+	case SceneTitle:
+		g.Title.Draw(screen)
+	case SceneHowTo:
+		g.HowTo.Draw(screen)
+	case SceneBattle:
+		g.Battle.Draw(screen)
+	case SceneGameOver:
+		g.GameOver.Draw(screen)
+	}
 }
 
-func (m *Magnet) Layout(width, height int) (int, int) {
+func (g *Game) Layout(width, height int) (int, int) {
 	return ScreenWidth, ScreenHeight
 }
 
-func NewGame() (*Magnet, error) {
-	return &Magnet{}, nil
+func (g *Game) init() {
+	g.SceneType = SceneType{
+		Type: SceneTitle,
+	}
+	g.Title = Title{}
+	g.HowTo = HowTo{}
+	g.Battle = Battle{}
+	g.GameOver = GameOver{}
+}
+
+func NewGame() (*Game, error) {
+	g := &Game{}
+	g.init()
+	return g, nil
+}
+
+func isCollision(objLeftUp, objSize Point) bool {
+	if (playerLeftUp.X + playerSize.X - objLeftUp.X) > 0 && (playerLeftUp.Y + playerSize.Y - objLeftUp.Y) > 0 &&
+		(playerLeftUp.X - objLeftUp.X) < 0 && (playerLeftUp.Y - objLeftUp.Y) < 0 {
+		return true
+	}
+	if (objLeftUp.X + objSize.X - playerLeftUp.X) > 0 && (objLeftUp.Y + objSize.X - playerLeftUp.Y) > 0 &&
+		(objLeftUp.X - playerLeftUp.X) < 0 && (objLeftUp.Y - playerLeftUp.Y) < 0 {
+		return true
+	}
+	return false
 }
