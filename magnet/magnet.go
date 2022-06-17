@@ -8,11 +8,6 @@ import (
 const (
 	ScreenWidth = 1920
 	ScreenHeight = 1080
-	playerFrame0X = 0
-	playerFrame0Y = 0
-	playerFrameWidth = 512
-	playerFrameHeight = 512
-	playerFrameNum = 8
 )
 
 type Game struct{

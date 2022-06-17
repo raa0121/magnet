@@ -17,14 +17,26 @@ type Battle struct {
 	backgroundX float64
 }
 
+const (
+	playerFrame0X = 0
+	playerFrame0Y = 0
+	playerFrameWidth = 256
+	playerFrameHeight = 256
+	playerFrameNum = 8
+)
+
 var (
 	BackgroundImage *ebiten.Image
-	PlayerImage *ebiten.Image
+	PlayerWaitImage *ebiten.Image
+	PlayerRunImage *ebiten.Image
 	ObjImage *ebiten.Image
 )
 
 var (
-	playerLeftUp = Point{(ScreenWidth - playerFrameWidth) / 2, (ScreenHeight - playerFrameHeight) / 2}
+	playerLeftUp = Point{
+		(ScreenWidth - playerFrameWidth) / 2,
+		(720 - playerFrameHeight),
+	}
 	playerSize = Point{playerFrameWidth, playerFrameHeight}
 	obj1LeftUp = Point{900, 700}
 	obj1Size = Point{300, 300}
@@ -32,7 +44,7 @@ var (
 
 func init() {
 	backgroundImageInit()
-	playerImageInit()
+	playerRunImageInit()
 	objImageInit()
 }
 
@@ -48,8 +60,8 @@ func backgroundImageInit() {
 	BackgroundImage = ebiten.NewImageFromImage(p)
 }
 
-func playerImageInit() {
-	b, err := resources.Embed.Open("player.png")
+func playerWaitImageInit() {
+	b, err := resources.Embed.Open("player_wait.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,7 +69,19 @@ func playerImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	PlayerImage = ebiten.NewImageFromImage(p)
+	PlayerWaitImage = ebiten.NewImageFromImage(p)
+}
+
+func playerRunImageInit() {
+	b, err := resources.Embed.Open("player_run.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+	p, err := png.Decode(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	PlayerRunImage = ebiten.NewImageFromImage(p)
 }
 
 func objImageInit() {
@@ -103,7 +127,7 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 	i := (s.frame / 5) % playerFrameNum
 	sx, sy := i*playerFrameWidth, playerFrame0Y
 	screen.DrawImage(
-		PlayerImage.SubImage(
+		PlayerRunImage.SubImage(
 			image.Rect(sx, sy, sx+playerFrameWidth, sy+playerFrameHeight),
 		).(*ebiten.Image),
 		playerOption,
