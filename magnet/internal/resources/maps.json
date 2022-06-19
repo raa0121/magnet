@@ -4,12 +4,14 @@
       "objects": [
         {
           "x": 100,
-          "y": 0,
           "object_type": 1
         },
         {
-          "x": 600,
-          "y": 300,
+          "x": 800,
+          "object_type": 2
+        },
+        {
+          "x": 1200,
           "object_type": 1
         }
       ]

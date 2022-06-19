@@ -10,7 +10,7 @@ import (
 )
 
 type Battle struct {
-	frame int
+	tick int
 	backgroundX float64
 }
 
@@ -23,6 +23,7 @@ const (
 )
 
 var (
+	playerY = 0.0
 	playerLeftUp = Point{
 		(ScreenWidth - playerFrameWidth) / 2,
 		(720 - playerFrameHeight),
@@ -30,22 +31,32 @@ var (
 	playerSize = Point{playerFrameWidth, playerFrameHeight}
 	obj1LeftUp = Point{900, 700}
 	obj1Size = Point{300, 300}
+	jumpTick int
+	isJump bool
 )
 
 func (s *Battle) Update(m *Game)  {
-	s.frame++
+	s.tick++
 	s.backgroundX -= 4
 	if m.backgroundX == -float64(ScreenWidth) {
 		m.backgroundX = 0
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyZ) {
-		m.SceneType.Type = SceneGameOver
+		jumpTick = s.tick
+		isJump = true
 	}
-	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-		m.SceneType.Type = SceneGameOver
-	}
-	if 0 < len(inpututil.JustPressedTouchIDs()) {
-		m.SceneType.Type = SceneGameOver
+	if isJump {
+		x := float64(s.tick - jumpTick) / 60.0
+		if x < 1 {
+			playerY += 3
+		}
+		if x >= 1 {
+			playerY -= 3
+			if playerY < 0 {
+				isJump = false
+				playerY = 0
+			}
+		}
 	}
 }
 
@@ -57,28 +68,38 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 	screen.DrawImage(BackgroundImage, bgFirstOption)
 	screen.DrawImage(BackgroundImage, bgSecondOption)
 
-	playerOption := &ebiten.DrawImageOptions{}
-	playerOption.GeoM.Translate(playerLeftUp.X, playerLeftUp.Y)
-
-	i := (s.frame / 5) % playerFrameNum
-	sx, sy := i*playerFrameWidth, playerFrame0Y
-	screen.DrawImage(
-		PlayerRunImage.SubImage(
-			image.Rect(sx, sy, sx+playerFrameWidth, sy+playerFrameHeight),
-		).(*ebiten.Image),
-		playerOption,
-	)
-
 	for _, m := range maps.Maps {
 		for _, o := range m.Objects {
 			objOption := &ebiten.DrawImageOptions{}
 			objOption.GeoM.Translate(o.X, -o.Y)
-			objOption.GeoM.Translate(float64(ScreenWidth / 2 - (s.frame * 4)), 720)
+			objOption.GeoM.Translate(float64(ScreenWidth / 2 - (s.tick * 4)), 720)
 			switch (o.ObjectType) {
 			case 1:
-				screen.DrawImage(ObjImage, objOption)
+				screen.DrawImage(Objct1Image, objOption)
+			case 2:
+				screen.DrawImage(Objct2Image, objOption)
 			}
 		}
 	}
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %f", ebiten.CurrentFPS()))
+	playerOption := &ebiten.DrawImageOptions{}
+	playerOption.GeoM.Translate(playerLeftUp.X, playerLeftUp.Y - playerY)
+
+	i := (s.tick / 5) % playerFrameNum
+	sx, sy := i*playerFrameWidth, playerFrame0Y
+	if isJump {
+		screen.DrawImage(
+			PlayerRunImage.SubImage(
+				image.Rect(4 * playerFrameWidth, 0, 5 * playerFrameWidth, playerFrameHeight),
+			).(*ebiten.Image),
+			playerOption,
+		)
+	} else {
+		screen.DrawImage(
+			PlayerRunImage.SubImage(
+				image.Rect(sx, sy, sx + playerFrameWidth, sy + playerFrameHeight),
+			).(*ebiten.Image),
+			playerOption,
+		)
+	}
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %.2f\nPlayeX: %.2f", ebiten.CurrentFPS(), playerY))
 }

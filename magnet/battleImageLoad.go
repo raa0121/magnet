@@ -14,7 +14,8 @@ var (
 	PlayerRunImage *ebiten.Image
 	EnemyWaitImage *ebiten.Image
 	EnemyRunImage *ebiten.Image
-	ObjImage *ebiten.Image
+	Objct1Image *ebiten.Image
+	Objct2Image *ebiten.Image
 )
 
 
@@ -23,7 +24,8 @@ func init() {
 	backgroundImageInit()
 	playerRunImageInit()
 	enemyRunImageInit()
-	objImageInit()
+	object1ImageInit()
+	object2ImageInit()
 }
 
 func backgroundImageInit() {
@@ -86,8 +88,8 @@ func enemyRunImageInit() {
 	EnemyRunImage = ebiten.NewImageFromImage(p)
 }
 
-func objImageInit() {
-	b, err := resources.Embed.Open("obj.png")
+func object1ImageInit() {
+	b, err := resources.Embed.Open("object_usb.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -95,5 +97,17 @@ func objImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	ObjImage = ebiten.NewImageFromImage(p)
+	Objct1Image = ebiten.NewImageFromImage(p)
+}
+
+func object2ImageInit() {
+	b, err := resources.Embed.Open("object_lan.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+	p, err := png.Decode(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	Objct2Image = ebiten.NewImageFromImage(p)
 }
