@@ -1,6 +1,7 @@
 package magnet
 
 import (
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -70,13 +71,9 @@ func NewGame() (*Game, error) {
 }
 
 func isCollision(objLeftUp, objSize Point) bool {
-	if (playerLeftUp.X + playerSize.X - objLeftUp.X) > 0 && (playerLeftUp.Y + playerSize.Y - objLeftUp.Y) > 0 &&
-		(playerLeftUp.X - objLeftUp.X) < 0 && (playerLeftUp.Y - objLeftUp.Y) < 0 {
-		return true
-	}
-	if (objLeftUp.X + objSize.X - playerLeftUp.X) > 0 && (objLeftUp.Y + objSize.X - playerLeftUp.Y) > 0 &&
-		(objLeftUp.X - playerLeftUp.X) < 0 && (objLeftUp.Y - playerLeftUp.Y) < 0 {
-		return true
-	}
+	if math.Abs((playerLeftUp.X + playerSize.X / 2) - (objLeftUp.X + objSize.X / 2)) < playerSize.X / 2 + objSize.X / 2 &&
+		math.Abs((playerLeftUp.Y + playerSize.Y / 2) - (objLeftUp.Y + objSize.Y / 2)) < playerSize.Y / 2 + objSize.Y / 2 {
+			return true
+		}
 	return false
 }
