@@ -28,11 +28,11 @@ func (s *Battle) Update(g *Game)  {
 	if g.backgroundX == -float64(ScreenWidth) {
 		g.backgroundX = 0
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyZ) && !player.isJump {
+	if inpututil.IsKeyJustPressed(ebiten.KeyZ) && !player.isJump && !player.isSlide {
 		jumpTick = s.tick
 		player.isJump = true
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyX) && !player.isSlide {
+	if inpututil.IsKeyJustPressed(ebiten.KeyX) && !player.isSlide && !player.isJump {
 		slideTick = s.tick
 		player.isSlide = true
 	}
