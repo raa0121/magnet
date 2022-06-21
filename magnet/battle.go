@@ -9,28 +9,15 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-const (
-	playerFrame0X = 0
-	playerFrame0Y = 0
-	playerFrameWidth = 256
-	playerFrameHeight = 256
-	playerFrameNum = 8
-)
-
 type Battle struct {
 	tick int
 	backgroundX float64
 }
 
 var (
-	playerY = 0.0
-	playerLeftUp = Point{
-		(ScreenWidth - playerFrameWidth) / 2,
-		(720 - playerFrameHeight - playerY),
-	}
-	playerSize = Point{playerFrameWidth, playerFrameHeight}
+	player *Player
 	jumpTick int
-	isJump bool
+	slideTick int
 	stage int
 	score int
 )
@@ -41,35 +28,52 @@ func (s *Battle) Update(g *Game)  {
 	if g.backgroundX == -float64(ScreenWidth) {
 		g.backgroundX = 0
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyZ) && !isJump {
+	if inpututil.IsKeyJustPressed(ebiten.KeyZ) && !player.isJump {
 		jumpTick = s.tick
-		isJump = true
+		player.isJump = true
 	}
-	if isJump {
+	if inpututil.IsKeyJustPressed(ebiten.KeyX) && !player.isSlide {
+		slideTick = s.tick
+		player.isSlide = true
+	}
+	if player.isJump {
 		x := float64(s.tick - jumpTick) / 60.0
 		if x < 0.8 {
-			playerY += 5
+			player.y += 5
 		}
 		if x >= 1.2 {
-			playerY -= 4
-			if playerY < 0 {
-				isJump = false
-				playerY = 0
+			player.y -= 4
+			if player.y < 0 {
+				player.isJump = false
+				player.y = 0
 			}
+		}
+	}
+	if player.isSlide {
+		x := float64(s.tick - slideTick) / 60.0
+		if x < 1 {
+			player.frame0.Y = 60
+			player.frameSize.Y = 196
+			player.y = -60
+		} else {
+			player.frame0.Y = 0
+			player.frameSize.Y = playerFrameHeight
+			player.y = 0
+			player.isSlide = false
 		}
 	}
 	m := maps.Maps[stage]
 	for i, o := range m.Objects {
 		maps.Maps[stage].Objects[i].positionX = o.X + float64(ScreenWidth / 2 - (s.tick * 4))
 		if isCollision(
-			Point{o.collisionLeftUp.X + o.positionX, 720 - o.Y + o.collisionLeftUp.Y},
-			Point{o.collisionRightDown.X + o.positionX, 720 - o.Y + o.collisionRightDown.Y},
+			Point{o.collisionLeftUp.X + o.positionX, playerFootY - o.Y + o.collisionLeftUp.Y},
+			Point{o.collisionRightDown.X + o.positionX, playerFootY - o.Y + o.collisionRightDown.Y},
 		) {
 			m.Objects[i].isHit = true
 		}
 	}
 	for _, o := range m.Objects {
-		if !o.isHit && playerLeftUp.X > o.positionX {
+		if !o.isHit && player.leftUp.X > o.positionX {
 			fmt.Printf("score: %d\n", score)
 			score += 100
 		}
@@ -87,9 +91,9 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 	m := maps.Maps[stage]
 	for _, o := range m.Objects {
 		objOption := &ebiten.DrawImageOptions{}
-		objOption.GeoM.Translate(o.positionX, 720 - o.Y)
+		objOption.GeoM.Translate(o.positionX, playerFootY - o.Y)
 		collisionOption := &ebiten.DrawImageOptions{}
-		collisionOption.GeoM.Translate(o.collisionLeftUp.X + o.positionX, 720 - o.Y + o.collisionLeftUp.Y)
+		collisionOption.GeoM.Translate(o.collisionLeftUp.X + o.positionX, playerFootY - o.Y + o.collisionLeftUp.Y)
 		switch (o.ObjectType) {
 		case 1:
 			screen.DrawImage(Objct1Image, objOption)
@@ -104,35 +108,48 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 		)
 	}
 	playerOption := &ebiten.DrawImageOptions{}
-	playerOption.GeoM.Translate(playerLeftUp.X, playerLeftUp.Y - playerY)
+	playerOption.GeoM.Translate(player.leftUp.X, player.leftUp.Y - player.y)
 
 	i := (s.tick / 5) % playerFrameNum
-	sx, sy := i * playerFrameWidth, playerFrame0Y
+	sx, sy := i * playerFrameWidth, int(player.frame0.Y)
+	enemySx, enemySy := i * playerFrameWidth, playerFrame0Y
 
 	enemyOption := &ebiten.DrawImageOptions{}
-	enemyOption.GeoM.Translate(0, playerLeftUp.Y)
+	enemyOption.GeoM.Translate(0, playerFootY - playerFrameHeight)
 	screen.DrawImage(
 		EnemyRunImage.SubImage(
-			image.Rect(sx, sy, sx + playerFrameWidth, sy + playerFrameHeight),
+			image.Rect(enemySx, enemySy, enemySx + playerFrameWidth, enemySy + playerFrameHeight),
 		).(*ebiten.Image),
 		enemyOption,
 	)
 
-	if isJump {
+	if player.isJump {
 		screen.DrawImage(
 			PlayerRunImage.SubImage(
 				image.Rect(4 * playerFrameWidth, 0, 5 * playerFrameWidth, playerFrameHeight),
 			).(*ebiten.Image),
 			playerOption,
 		)
+	} else if player.isSlide {
+		screen.DrawImage(
+			PlayerSlideImage.SubImage(
+				image.Rect(sx, sy, sx + int(player.frameSize.X), sy + int(player.frameSize.Y)),
+			).(*ebiten.Image),
+			playerOption,
+		)
 	} else {
 		screen.DrawImage(
 			PlayerRunImage.SubImage(
-				image.Rect(sx, sy, sx + playerFrameWidth, sy + playerFrameHeight),
+				image.Rect(sx, sy, sx + int(player.frameSize.X), sy + int(player.frameSize.Y)),
 			).(*ebiten.Image),
 			playerOption,
 		)
 	}
-	screen.DrawImage(CollisionImage, playerOption)
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %.2f\nPlayeY: %.2f", ebiten.CurrentFPS(), playerY))
+	screen.DrawImage(
+		CollisionImage.SubImage(
+			image.Rect(0, 0, int(player.frameSize.X), int(player.frameSize.Y)),
+		).(*ebiten.Image),
+		playerOption,
+	)
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %.2f\nPlayeY: %.2f", ebiten.CurrentFPS(), player.y))
 }

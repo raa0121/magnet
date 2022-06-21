@@ -12,6 +12,7 @@ var (
 	BackgroundImage *ebiten.Image
 	PlayerWaitImage *ebiten.Image
 	PlayerRunImage *ebiten.Image
+	PlayerSlideImage *ebiten.Image
 	EnemyWaitImage *ebiten.Image
 	EnemyRunImage *ebiten.Image
 	Objct1Image *ebiten.Image
@@ -24,6 +25,7 @@ var (
 func init() {
 	backgroundImageInit()
 	playerRunImageInit()
+	playerSlideImageInit()
 	enemyRunImageInit()
 	object1ImageInit()
 	object2ImageInit()
@@ -64,6 +66,18 @@ func playerRunImageInit() {
 		log.Fatal(err)
 	}
 	PlayerRunImage = ebiten.NewImageFromImage(p)
+}
+
+func playerSlideImageInit() {
+	b, err := resources.Embed.Open("player_slide.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+	p, err := png.Decode(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	PlayerSlideImage = ebiten.NewImageFromImage(p)
 }
 
 func enemyWaitImageInit() {
