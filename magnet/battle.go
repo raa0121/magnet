@@ -39,13 +39,13 @@ func (s *Battle) Update(g *Game)  {
 	if player.isJump {
 		x := float64(s.tick - jumpTick) / 60.0
 		if x < 0.8 {
-			player.y += 5
+			player.leftUp.Y -= 6
 		}
-		if x >= 1.2 {
-			player.y -= 4
-			if player.y < 0 {
+		if x >= 1.7 {
+			player.leftUp.Y  += 4
+			if player.leftUp.Y >  playerFootY - player.frameSize.Y {
 				player.isJump = false
-				player.y = 0
+				player.leftUp.Y = playerFootY - player.frameSize.Y
 			}
 		}
 	}
@@ -53,12 +53,12 @@ func (s *Battle) Update(g *Game)  {
 		x := float64(s.tick - slideTick) / 60.0
 		if x < 1 {
 			player.frame0.Y = 60
-			player.frameSize.Y = 196
-			player.y = -60
+			player.frameSize.Y =  playerFootY - playerFrameHeight - 60
+			player.leftUp.Y = playerFootY - playerFrameHeight - 60
 		} else {
 			player.frame0.Y = 0
 			player.frameSize.Y = playerFrameHeight
-			player.y = 0
+			player.leftUp.Y = playerFootY - player.frameSize.Y
 			player.isSlide = false
 		}
 	}
@@ -70,12 +70,14 @@ func (s *Battle) Update(g *Game)  {
 			Point{o.collisionRightDown.X + o.positionX, playerFootY - o.Y + o.collisionRightDown.Y},
 		) {
 			m.Objects[i].isHit = true
+			fmt.Printf("Object[%d] is Hit\n", i)
 		}
 	}
-	for _, o := range m.Objects {
+	for i, o := range m.Objects {
 		if !o.isHit && player.leftUp.X > o.positionX {
 			fmt.Printf("score: %d\n", score)
 			score += 100
+			m.Objects[i].isHit = true
 		}
 	}
 }
@@ -108,7 +110,7 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 		)
 	}
 	playerOption := &ebiten.DrawImageOptions{}
-	playerOption.GeoM.Translate(player.leftUp.X, player.leftUp.Y - player.y)
+	playerOption.GeoM.Translate(player.leftUp.X, player.leftUp.Y)
 
 	i := (s.tick / 5) % playerFrameNum
 	sx, sy := i * playerFrameWidth, int(player.frame0.Y)
@@ -151,5 +153,5 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 		).(*ebiten.Image),
 		playerOption,
 	)
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %.2f\nPlayeY: %.2f", ebiten.CurrentFPS(), player.y))
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %.2f\nPlayeY: %.2f\nPlayerLeftUp: %.2f", ebiten.CurrentFPS(), player.leftUp.Y, player.leftUp.Y))
 }

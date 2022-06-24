@@ -49,8 +49,8 @@ func mapInit() {
 			switch o.ObjectType {
 			case 1:
 				maps.Maps[i].Objects[j].Y = object1LeftUp
-				maps.Maps[i].Objects[j].collisionLeftUp = Point{10, 10}
-				maps.Maps[i].Objects[j].collisionRightDown = Point{240, 245}
+				maps.Maps[i].Objects[j].collisionLeftUp = Point{20, 20}
+				maps.Maps[i].Objects[j].collisionRightDown = Point{225, 245}
 				maps.Maps[i].Objects[j].positionX = 0.0
 			case 2:
 				maps.Maps[i].Objects[j].Y = object2LeftUp

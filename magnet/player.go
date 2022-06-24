@@ -14,7 +14,6 @@ type Player struct {
 	frameSize Point
 	frameNum int
 	leftUp Point
-	y float64
 	isJump, isSlide bool
 }
 
@@ -23,12 +22,11 @@ func init() {
 		frame0: Point{0, 0},
 		frameSize: Point{playerFrameWidth, playerFrameHeight},
 		frameNum: playerFrameNum,
-		y: 0.0,
 		isJump: false,
 		isSlide: false,
 	}
 	player.leftUp = Point{
 		(ScreenWidth - player.frameSize.X) / 2,
-		(playerFootY - player.frameSize.Y - player.y),
+		(playerFootY - player.frameSize.Y),
 	}
 }
