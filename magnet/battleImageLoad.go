@@ -20,11 +20,11 @@ var (
 	EnemyRunImage *ebiten.Image
 	Objct1Image *ebiten.Image
 	Objct2Image *ebiten.Image
+	Objct3Image *ebiten.Image
+	Objct4Image *ebiten.Image
 	CollisionImage *ebiten.Image
 	Font font.Face
 )
-
-
 
 func init() {
 	backgroundImageInit()
@@ -33,6 +33,8 @@ func init() {
 	enemyRunImageInit()
 	object1ImageInit()
 	object2ImageInit()
+	object3ImageInit()
+	object4ImageInit()
 	collisionImageInit()
 	fontInit()
 }
@@ -131,6 +133,30 @@ func object2ImageInit() {
 		log.Fatal(err)
 	}
 	Objct2Image = ebiten.NewImageFromImage(p)
+}
+
+func object3ImageInit() {
+	b, err := resources.Images.Open("object_lan2.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+	p, err := png.Decode(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	Objct3Image = ebiten.NewImageFromImage(p)
+}
+
+func object4ImageInit() {
+	b, err := resources.Images.Open("object_display.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+	p, err := png.Decode(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	Objct4Image = ebiten.NewImageFromImage(p)
 }
 
 func collisionImageInit() {

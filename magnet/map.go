@@ -11,6 +11,8 @@ import (
 const (
 	object1LeftUp = 200
 	object2LeftUp = 320
+	object3LeftUp = 324
+	object4LeftUp = 790
 )
 
 var maps Maps
@@ -56,6 +58,16 @@ func mapInit() {
 				maps.Maps[i].Objects[j].Y = object2LeftUp
 				maps.Maps[i].Objects[j].collisionLeftUp = Point{0, 100}
 				maps.Maps[i].Objects[j].collisionRightDown = Point{256, 256}
+				maps.Maps[i].Objects[j].positionX = 0.0
+			case 3:
+				maps.Maps[i].Objects[j].Y = object3LeftUp
+				maps.Maps[i].Objects[j].collisionLeftUp = Point{0, 0}
+				maps.Maps[i].Objects[j].collisionRightDown = Point{248, 118}
+				maps.Maps[i].Objects[j].positionX = 0.0
+			case 4:
+				maps.Maps[i].Objects[j].Y = object4LeftUp
+				maps.Maps[i].Objects[j].collisionLeftUp = Point{0, 0}
+				maps.Maps[i].Objects[j].collisionRightDown = Point{1122, 586}
 				maps.Maps[i].Objects[j].positionX = 0.0
 			}
 		}

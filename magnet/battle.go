@@ -98,6 +98,10 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 			screen.DrawImage(Objct1Image, objOption)
 		case 2:
 			screen.DrawImage(Objct2Image, objOption)
+		case 3:
+			screen.DrawImage(Objct3Image, objOption)
+		case 4:
+			screen.DrawImage(Objct4Image, objOption)
 		}
 		screen.DrawImage(
 			CollisionImage.SubImage(

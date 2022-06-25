@@ -6,7 +6,7 @@ const (
 	playerFrameWidth = 256
 	playerFrameHeight = 256
 	playerFrameNum = 8
-	playerFootY = 720
+	playerFootY = 790
 )
 
 type Player struct {

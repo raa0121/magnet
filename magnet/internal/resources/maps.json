@@ -13,6 +13,14 @@
         {
           "x": 1600,
           "object_type": 1
+        },
+        {
+          "x": 2500,
+          "object_type": 3
+        },
+        {
+          "x": 3200,
+          "object_type": 4
         }
       ]
     }
