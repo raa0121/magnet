@@ -71,8 +71,8 @@ func NewGame() (*Game, error) {
 }
 
 func isCollision(objLeftUp, objSize Point) bool {
-	if math.Abs((player.leftUp.X + player.frameSize.X / 2) - (objLeftUp.X + objSize.X / 2)) < player.frameSize.X / 2 + objSize.X / 2 &&
-		math.Abs((player.leftUp.Y + player.frameSize.Y / 2) - (objLeftUp.Y + objSize.Y / 2)) < player.frameSize.Y / 2 + objSize.Y / 2 {
+	if math.Abs((player.collisionLeftUp.X + player.collisionRightDown.X / 2) - (objLeftUp.X + objSize.X / 2)) < player.collisionRightDown.X / 2 + objSize.X / 2 &&
+		math.Abs((player.collisionLeftUp.Y + player.collisionRightDown.Y / 2) - (objLeftUp.Y + objSize.Y / 2)) < player.collisionRightDown.Y / 2 + objSize.Y / 2 {
 			return true
 		}
 	return false

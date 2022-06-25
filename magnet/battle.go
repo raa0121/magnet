@@ -21,11 +21,16 @@ var (
 	jumpTick int
 	slideTick int
 	stage int
-	score int = 100
+	score int
 )
 
 func (s *Battle) Update(g *Game)  {
 	s.tick++
+	if !bgmPlayer.IsPlaying() {
+		bgmPlayer.SetVolume(0.1)
+		bgmPlayer.Rewind()
+		bgmPlayer.Play()
+	}
 	s.backgroundX -= 4
 	if g.backgroundX == -float64(ScreenWidth) {
 		g.backgroundX = 0
@@ -39,6 +44,11 @@ func (s *Battle) Update(g *Game)  {
 		player.frameSize.Y =  playerFrameHeight - 60
 		player.leftUp.Y = playerFootY - playerFrameHeight + 60
 		player.isSlide = true
+		if !slidePlayer.IsPlaying() {
+			slidePlayer.SetVolume(0.8)
+			slidePlayer.Rewind()
+			slidePlayer.Play()
+		}
 	}
 	if inpututil.IsKeyJustReleased(ebiten.KeyX) {
 		player.frame0.Y = 0
@@ -50,12 +60,22 @@ func (s *Battle) Update(g *Game)  {
 		x := float64(s.tick - jumpTick) / 60.0
 		if x < 0.8 {
 			player.leftUp.Y -= 6
+			if !jumpPlayer.IsPlaying() {
+				jumpPlayer.SetVolume(0.8)
+				jumpPlayer.Rewind()
+				jumpPlayer.Play()
+			}
 		}
 		if x >= 1.7 {
-			player.leftUp.Y  += 4
-			if player.leftUp.Y >  playerFootY - player.frameSize.Y {
+			player.leftUp.Y  += 4.5
+			if player.leftUp.Y >=  playerFootY - player.frameSize.Y {
 				player.isJump = false
 				player.leftUp.Y = playerFootY - player.frameSize.Y
+			}
+			if !failPlayer.IsPlaying() && player.isJump {
+				failPlayer.SetVolume(0.8)
+				failPlayer.Rewind()
+				failPlayer.Play()
 			}
 		}
 	}
@@ -65,16 +85,16 @@ func (s *Battle) Update(g *Game)  {
 		if isCollision(
 			Point{o.collisionLeftUp.X + o.positionX, playerFootY - o.Y + o.collisionLeftUp.Y},
 			Point{o.collisionRightDown.X + o.positionX, playerFootY - o.Y + o.collisionRightDown.Y},
-		) {
-			m.Objects[i].isHit = true
+		) && !player.objectHit[stage][i] {
+			player.objectHit[stage][i] = true
 			fmt.Printf("tick:%d Object[%d] is Hit\n", s.tick, i)
 		}
 	}
 	for i, o := range m.Objects {
-		if !o.isHit && player.leftUp.X > o.positionX {
+		if !player.objectHit[stage][i] && !o.isScored && player.leftUp.X > o.positionX {
 			fmt.Printf("score: %d\n", score)
 			score += 100
-			m.Objects[i].isHit = true
+			maps.Maps[stage].Objects[i].isScored = true
 		}
 	}
 }
@@ -84,8 +104,8 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 	bgSecondOption := &ebiten.DrawImageOptions{}
 	bgFirstOption.GeoM.Translate(s.backgroundX, 0)
 	bgSecondOption.GeoM.Translate(s.backgroundX + float64(ScreenWidth), 0)
-	screen.DrawImage(BackgroundImage, bgFirstOption)
-	screen.DrawImage(BackgroundImage, bgSecondOption)
+	screen.DrawImage(backgroundImage, bgFirstOption)
+	screen.DrawImage(backgroundImage, bgSecondOption)
 
 	m := maps.Maps[stage]
 	for _, o := range m.Objects {
@@ -95,16 +115,16 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 		collisionOption.GeoM.Translate(o.collisionLeftUp.X + o.positionX, playerFootY - o.Y + o.collisionLeftUp.Y)
 		switch (o.ObjectType) {
 		case 1:
-			screen.DrawImage(Objct1Image, objOption)
+			screen.DrawImage(objct1Image, objOption)
 		case 2:
-			screen.DrawImage(Objct2Image, objOption)
+			screen.DrawImage(objct2Image, objOption)
 		case 3:
-			screen.DrawImage(Objct3Image, objOption)
+			screen.DrawImage(objct3Image, objOption)
 		case 4:
-			screen.DrawImage(Objct4Image, objOption)
+			screen.DrawImage(objct4Image, objOption)
 		}
 		screen.DrawImage(
-			CollisionImage.SubImage(
+			collisionImage.SubImage(
 				image.Rect(0, 0, int(o.collisionRightDown.X), int(o.collisionRightDown.Y)),
 			).(*ebiten.Image),
 			collisionOption,
@@ -120,7 +140,7 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 	enemyOption := &ebiten.DrawImageOptions{}
 	enemyOption.GeoM.Translate(0, playerFootY - playerFrameHeight)
 	screen.DrawImage(
-		EnemyRunImage.SubImage(
+		enemyRunImage.SubImage(
 			image.Rect(enemySx, enemySy, enemySx + playerFrameWidth, enemySy + playerFrameHeight),
 		).(*ebiten.Image),
 		enemyOption,
@@ -128,31 +148,35 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 
 	if player.isJump {
 		screen.DrawImage(
-			PlayerRunImage.SubImage(
+			playerRunImage.SubImage(
 				image.Rect(4 * playerFrameWidth, 0, 5 * playerFrameWidth, playerFrameHeight),
 			).(*ebiten.Image),
 			playerOption,
 		)
 	} else if player.isSlide {
 		screen.DrawImage(
-			PlayerSlideImage.SubImage(
+			playerSlideImage.SubImage(
 				image.Rect(sx, sy, sx + int(player.frameSize.X), sy + int(player.frameSize.Y)),
 			).(*ebiten.Image),
 			playerOption,
 		)
 	} else {
 		screen.DrawImage(
-			PlayerRunImage.SubImage(
+			playerRunImage.SubImage(
 				image.Rect(sx, sy, sx + int(player.frameSize.X), sy + int(player.frameSize.Y)),
 			).(*ebiten.Image),
 			playerOption,
 		)
 	}
+
+	playerCollisionOption := &ebiten.DrawImageOptions{}
+	playerCollisionOption.GeoM.Translate(player.leftUp.X, player.leftUp.Y)
+	playerCollisionOption.GeoM.Translate(player.collisionLeftUp.X, player.collisionLeftUp.Y)
 	screen.DrawImage(
-		CollisionImage.SubImage(
-			image.Rect(0, 0, int(player.frameSize.X), int(player.frameSize.Y)),
+		collisionImage.SubImage(
+			image.Rect(0, 0, int(player.collisionRightDown.X - player.collisionLeftUp.X), int(player.collisionRightDown.Y)),
 		).(*ebiten.Image),
-		playerOption,
+		playerCollisionOption,
 	)
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("tick:%d\nFPS: %.2f\nPlayeFrameSizeY: %.2f\nPlayerLeftUp: %.2f", s.tick, ebiten.CurrentFPS(), player.frameSize.Y, player.leftUp.Y))
 

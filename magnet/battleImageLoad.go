@@ -12,17 +12,17 @@ import (
 )
 
 var (
-	BackgroundImage *ebiten.Image
-	PlayerWaitImage *ebiten.Image
-	PlayerRunImage *ebiten.Image
-	PlayerSlideImage *ebiten.Image
-	EnemyWaitImage *ebiten.Image
-	EnemyRunImage *ebiten.Image
-	Objct1Image *ebiten.Image
-	Objct2Image *ebiten.Image
-	Objct3Image *ebiten.Image
-	Objct4Image *ebiten.Image
-	CollisionImage *ebiten.Image
+	backgroundImage *ebiten.Image
+	playerWaitImage *ebiten.Image
+	playerRunImage *ebiten.Image
+	playerSlideImage *ebiten.Image
+	enemyWaitImage *ebiten.Image
+	enemyRunImage *ebiten.Image
+	objct1Image *ebiten.Image
+	objct2Image *ebiten.Image
+	objct3Image *ebiten.Image
+	objct4Image *ebiten.Image
+	collisionImage *ebiten.Image
 	Font font.Face
 )
 
@@ -48,7 +48,7 @@ func backgroundImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	BackgroundImage = ebiten.NewImageFromImage(p)
+	backgroundImage = ebiten.NewImageFromImage(p)
 }
 
 func playerWaitImageInit() {
@@ -60,7 +60,7 @@ func playerWaitImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	PlayerWaitImage = ebiten.NewImageFromImage(p)
+	playerWaitImage = ebiten.NewImageFromImage(p)
 }
 
 func playerRunImageInit() {
@@ -72,7 +72,7 @@ func playerRunImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	PlayerRunImage = ebiten.NewImageFromImage(p)
+	playerRunImage = ebiten.NewImageFromImage(p)
 }
 
 func playerSlideImageInit() {
@@ -84,7 +84,7 @@ func playerSlideImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	PlayerSlideImage = ebiten.NewImageFromImage(p)
+	playerSlideImage = ebiten.NewImageFromImage(p)
 }
 
 func enemyWaitImageInit() {
@@ -96,7 +96,7 @@ func enemyWaitImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	EnemyWaitImage = ebiten.NewImageFromImage(p)
+	enemyWaitImage = ebiten.NewImageFromImage(p)
 }
 
 func enemyRunImageInit() {
@@ -108,7 +108,7 @@ func enemyRunImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	EnemyRunImage = ebiten.NewImageFromImage(p)
+	enemyRunImage = ebiten.NewImageFromImage(p)
 }
 
 func object1ImageInit() {
@@ -120,7 +120,7 @@ func object1ImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	Objct1Image = ebiten.NewImageFromImage(p)
+	objct1Image = ebiten.NewImageFromImage(p)
 }
 
 func object2ImageInit() {
@@ -132,7 +132,7 @@ func object2ImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	Objct2Image = ebiten.NewImageFromImage(p)
+	objct2Image = ebiten.NewImageFromImage(p)
 }
 
 func object3ImageInit() {
@@ -144,7 +144,7 @@ func object3ImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	Objct3Image = ebiten.NewImageFromImage(p)
+	objct3Image = ebiten.NewImageFromImage(p)
 }
 
 func object4ImageInit() {
@@ -156,7 +156,7 @@ func object4ImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	Objct4Image = ebiten.NewImageFromImage(p)
+	objct4Image = ebiten.NewImageFromImage(p)
 }
 
 func collisionImageInit() {
@@ -168,7 +168,7 @@ func collisionImageInit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	CollisionImage = ebiten.NewImageFromImage(p)
+	collisionImage = ebiten.NewImageFromImage(p)
 }
 
 func fontInit() {

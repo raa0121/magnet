@@ -14,6 +14,8 @@ var (
 	Embed fs.FS
 	Images fs.FS
 	Fonts fs.FS
+	Bgms fs.FS
+	Ses fs.FS
 )
 
 func init() {
@@ -27,6 +29,14 @@ func init() {
 		log.Fatal(err)
 	}
 	Fonts, err = fs.Sub(rawEmbed, path.Join("resources", "fonts"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	Bgms, err = fs.Sub(rawEmbed, path.Join("resources", "bgms"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	Ses, err = fs.Sub(rawEmbed, path.Join("resources", "ses"))
 	if err != nil {
 		log.Fatal(err)
 	}

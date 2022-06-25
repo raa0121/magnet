@@ -31,7 +31,7 @@ type Object struct {
 	collisionLeftUp, collisionRightDown Point
 	positionX float64
 	ObjectType int `json:"object_type"`
-	isHit bool
+	isScored bool
 }
 
 func init() {
@@ -52,12 +52,12 @@ func mapInit() {
 			case 1:
 				maps.Maps[i].Objects[j].Y = object1LeftUp
 				maps.Maps[i].Objects[j].collisionLeftUp = Point{20, 20}
-				maps.Maps[i].Objects[j].collisionRightDown = Point{225, 245}
+				maps.Maps[i].Objects[j].collisionRightDown = Point{225, 225}
 				maps.Maps[i].Objects[j].positionX = 0.0
 			case 2:
 				maps.Maps[i].Objects[j].Y = object2LeftUp
-				maps.Maps[i].Objects[j].collisionLeftUp = Point{0, 100}
-				maps.Maps[i].Objects[j].collisionRightDown = Point{256, 256}
+				maps.Maps[i].Objects[j].collisionLeftUp = Point{50, 100}
+				maps.Maps[i].Objects[j].collisionRightDown = Point{195, 256}
 				maps.Maps[i].Objects[j].positionX = 0.0
 			case 3:
 				maps.Maps[i].Objects[j].Y = object3LeftUp

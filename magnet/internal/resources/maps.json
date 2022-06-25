@@ -3,23 +3,23 @@
     {
       "objects": [
         {
-          "x": 100,
+          "x": 700,
           "object_type": 1
         },
         {
-          "x": 800,
+          "x": 1400,
           "object_type": 2
         },
         {
-          "x": 1600,
+          "x": 2200,
           "object_type": 1
         },
         {
-          "x": 2500,
+          "x": 3100,
           "object_type": 3
         },
         {
-          "x": 3200,
+          "x": 3800,
           "object_type": 4
         }
       ]
