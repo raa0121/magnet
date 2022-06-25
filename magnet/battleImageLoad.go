@@ -2,10 +2,13 @@ package magnet
 
 import (
 	"image/png"
+	"io/fs"
 	"log"
 
+	"github.com/golang/freetype/truetype"
 	"github.com/hajimehoshi/ebiten/v2"
 	resources "github.com/raa0121/magnet/magnet/internal"
+	"golang.org/x/image/font"
 )
 
 var (
@@ -18,6 +21,7 @@ var (
 	Objct1Image *ebiten.Image
 	Objct2Image *ebiten.Image
 	CollisionImage *ebiten.Image
+	Font font.Face
 )
 
 
@@ -30,10 +34,11 @@ func init() {
 	object1ImageInit()
 	object2ImageInit()
 	collisionImageInit()
+	fontInit()
 }
 
 func backgroundImageInit() {
-	b, err := resources.Embed.Open("bg.png")
+	b, err := resources.Images.Open("bg.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,7 +50,7 @@ func backgroundImageInit() {
 }
 
 func playerWaitImageInit() {
-	b, err := resources.Embed.Open("player_wait.png")
+	b, err := resources.Images.Open("player_wait.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,7 +62,7 @@ func playerWaitImageInit() {
 }
 
 func playerRunImageInit() {
-	b, err := resources.Embed.Open("player_run.png")
+	b, err := resources.Images.Open("player_run.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -69,7 +74,7 @@ func playerRunImageInit() {
 }
 
 func playerSlideImageInit() {
-	b, err := resources.Embed.Open("player_slide.png")
+	b, err := resources.Images.Open("player_slide.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,7 +86,7 @@ func playerSlideImageInit() {
 }
 
 func enemyWaitImageInit() {
-	b, err := resources.Embed.Open("enemy_wait.png")
+	b, err := resources.Images.Open("enemy_wait.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -93,7 +98,7 @@ func enemyWaitImageInit() {
 }
 
 func enemyRunImageInit() {
-	b, err := resources.Embed.Open("enemy_run.png")
+	b, err := resources.Images.Open("enemy_run.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -105,7 +110,7 @@ func enemyRunImageInit() {
 }
 
 func object1ImageInit() {
-	b, err := resources.Embed.Open("object_usb.png")
+	b, err := resources.Images.Open("object_usb.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -117,7 +122,7 @@ func object1ImageInit() {
 }
 
 func object2ImageInit() {
-	b, err := resources.Embed.Open("object_lan.png")
+	b, err := resources.Images.Open("object_lan.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -129,7 +134,7 @@ func object2ImageInit() {
 }
 
 func collisionImageInit() {
-	b, err := resources.Embed.Open("obj.png")
+	b, err := resources.Images.Open("obj.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -138,4 +143,20 @@ func collisionImageInit() {
 		log.Fatal(err)
 	}
 	CollisionImage = ebiten.NewImageFromImage(p)
+}
+
+func fontInit() {
+	b, err := fs.ReadFile(resources.Fonts, "mplus-1p-regular.ttf")
+	if err != nil {
+		log.Fatal(err)
+	}
+	tt, err := truetype.Parse(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	Font = truetype.NewFace(tt, &truetype.Options{
+		Size: 24,
+		DPI: 72,
+		Hinting: font.HintingFull,
+	})
 }

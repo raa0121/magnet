@@ -3,10 +3,12 @@ package magnet
 import (
 	"fmt"
 	"image"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text"
 )
 
 type Battle struct {
@@ -19,7 +21,7 @@ var (
 	jumpTick int
 	slideTick int
 	stage int
-	score int
+	score int = 100
 )
 
 func (s *Battle) Update(g *Game)  {
@@ -65,7 +67,7 @@ func (s *Battle) Update(g *Game)  {
 			Point{o.collisionRightDown.X + o.positionX, playerFootY - o.Y + o.collisionRightDown.Y},
 		) {
 			m.Objects[i].isHit = true
-			fmt.Printf("Object[%d] is Hit\n", i)
+			fmt.Printf("tick:%d Object[%d] is Hit\n", s.tick, i)
 		}
 	}
 	for i, o := range m.Objects {
@@ -148,5 +150,8 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 		).(*ebiten.Image),
 		playerOption,
 	)
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %.2f\nPlayeFrameSizeY: %.2f\nPlayerLeftUp: %.2f", ebiten.CurrentFPS(), player.frameSize.Y, player.leftUp.Y))
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("tick:%d\nFPS: %.2f\nPlayeFrameSizeY: %.2f\nPlayerLeftUp: %.2f", s.tick, ebiten.CurrentFPS(), player.frameSize.Y, player.leftUp.Y))
+
+	displayRectangle := text.BoundString(Font, fmt.Sprintf("Score: %d", score))
+	text.Draw(screen, fmt.Sprintf("Score: %d", score), Font, ScreenWidth - displayRectangle.Dx() - 10, displayRectangle.Dy() + 10, color.White)
 }

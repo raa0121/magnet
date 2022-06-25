@@ -21,7 +21,7 @@ func init() {
 }
 
 func howToBackgroundInit() {// {{{
-	b, err := resources.Embed.Open("howto.png")
+	b, err := resources.Images.Open("howto.png")
 	if err != nil {
 		log.Fatal(err)
 	}

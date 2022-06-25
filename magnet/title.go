@@ -21,7 +21,7 @@ func init() {
 }
 
 func titleBackgroundInit() {
-	b, err := resources.Embed.Open("title.png")
+	b, err := resources.Images.Open("title.png")
 	if err != nil {
 		log.Fatal(err)
 	}
