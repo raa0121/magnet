@@ -33,8 +33,16 @@ func (s *Battle) Update(g *Game)  {
 		player.isJump = true
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyX) && !player.isSlide && !player.isJump {
-		slideTick = s.tick
+		player.frame0.Y = 60
+		player.frameSize.Y =  playerFrameHeight - 60
+		player.leftUp.Y = playerFootY - playerFrameHeight + 60
 		player.isSlide = true
+	}
+	if inpututil.IsKeyJustReleased(ebiten.KeyX) {
+		player.frame0.Y = 0
+		player.frameSize.Y = playerFrameHeight
+		player.leftUp.Y = playerFootY - player.frameSize.Y
+		player.isSlide = false
 	}
 	if player.isJump {
 		x := float64(s.tick - jumpTick) / 60.0
@@ -47,19 +55,6 @@ func (s *Battle) Update(g *Game)  {
 				player.isJump = false
 				player.leftUp.Y = playerFootY - player.frameSize.Y
 			}
-		}
-	}
-	if player.isSlide {
-		x := float64(s.tick - slideTick) / 60.0
-		if x < 1 {
-			player.frame0.Y = 60
-			player.frameSize.Y =  playerFootY - playerFrameHeight - 60
-			player.leftUp.Y = playerFootY - playerFrameHeight - 60
-		} else {
-			player.frame0.Y = 0
-			player.frameSize.Y = playerFrameHeight
-			player.leftUp.Y = playerFootY - player.frameSize.Y
-			player.isSlide = false
 		}
 	}
 	m := maps.Maps[stage]
@@ -153,5 +148,5 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 		).(*ebiten.Image),
 		playerOption,
 	)
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %.2f\nPlayeY: %.2f\nPlayerLeftUp: %.2f", ebiten.CurrentFPS(), player.leftUp.Y, player.leftUp.Y))
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %.2f\nPlayeFrameSizeY: %.2f\nPlayerLeftUp: %.2f", ebiten.CurrentFPS(), player.frameSize.Y, player.leftUp.Y))
 }
