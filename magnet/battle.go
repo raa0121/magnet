@@ -22,6 +22,7 @@ var (
 	slideTick int
 	stage int
 	score int
+	enemyX float64
 )
 
 func (s *Battle) Update(g *Game)  {
@@ -87,6 +88,12 @@ func (s *Battle) Update(g *Game)  {
 			Point{o.collisionRightDown.X + o.positionX, playerFootY - o.Y + o.collisionRightDown.Y},
 		) && !player.objectHit[stage][i] {
 			player.objectHit[stage][i] = true
+			enemyX += 30
+			if !damagePlayer.IsPlaying() {
+				damagePlayer.SetVolume(0.8)
+				damagePlayer.Rewind()
+				damagePlayer.Play()
+			}
 			fmt.Printf("tick:%d Object[%d] is Hit\n", s.tick, i)
 		}
 	}
@@ -138,7 +145,7 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 	enemySx, enemySy := i * playerFrameWidth, playerFrame0Y
 
 	enemyOption := &ebiten.DrawImageOptions{}
-	enemyOption.GeoM.Translate(0, playerFootY - playerFrameHeight)
+	enemyOption.GeoM.Translate(enemyX, playerFootY - playerFrameHeight)
 	screen.DrawImage(
 		enemyRunImage.SubImage(
 			image.Rect(enemySx, enemySy, enemySx + playerFrameWidth, enemySy + playerFrameHeight),
