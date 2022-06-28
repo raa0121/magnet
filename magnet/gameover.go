@@ -13,10 +13,13 @@ type GameOver struct {
 }
 
 func (s *GameOver) Update(g *Game)  {
-	if ebiten.IsKeyPressed(ebiten.KeyZ) {
-		g.SceneType.Type = SceneTitle
-	}
-	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+	if inpututil.IsKeyJustPressed(ebiten.KeyZ) {
+		score = 0
+		enemyX = 0
+		tick = 0
+		backgroundX = 0
+		playerInit()
+		mapInit()
 		g.SceneType.Type = SceneTitle
 	}
 }

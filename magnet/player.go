@@ -20,6 +20,10 @@ type Player struct {
 }
 
 func init() {
+	playerInit()
+}
+
+func playerInit() {
 	player = &Player{
 		frame0: Point{0, 0},
 		frameSize: Point{playerFrameWidth, playerFrameHeight},

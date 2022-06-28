@@ -6,14 +6,12 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	//"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text"
 )
 
 type Battle struct {
-	tick int
-	backgroundX float64
 }
 
 var (
@@ -24,28 +22,30 @@ var (
 	score int
 	enemyX float64
 	isStart bool
+	tick int
+	backgroundX float64
 )
 
 func (s *Battle) Update(g *Game)  {
-	s.tick++
+	tick++
 	if !countDownPlayer.IsPlaying() && !isStart {
 		countDownPlayer.SetVolume(0.8)
 		countDownPlayer.Rewind()
 		countDownPlayer.Play()
 		isStart = true
 	}
-	if s.tick / 60 > 3 {
+	if tick / 60 > 3 {
 		if !bgmPlayer.IsPlaying() {
 			bgmPlayer.SetVolume(0.1)
 			bgmPlayer.Rewind()
 			bgmPlayer.Play()
 		}
-		s.backgroundX -= 4
-		if g.backgroundX == -float64(ScreenWidth) {
-			g.backgroundX = 0
+		backgroundX -= 4
+		if backgroundX == -float64(ScreenWidth) {
+			backgroundX = 0
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyZ) && !player.isJump && !player.isSlide {
-			jumpTick = s.tick
+			jumpTick = tick
 			player.isJump = true
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyX) && !player.isSlide && !player.isJump {
@@ -66,7 +66,7 @@ func (s *Battle) Update(g *Game)  {
 			player.isSlide = false
 		}
 		if player.isJump {
-			x := float64(s.tick - jumpTick) / 60.0
+			x := float64(tick - jumpTick) / 60.0
 			if x < 0.8 {
 				player.leftUp.Y -= 6
 				if !jumpPlayer.IsPlaying() {
@@ -90,7 +90,7 @@ func (s *Battle) Update(g *Game)  {
 		}
 		m := maps.Maps[stage]
 		for i, o := range m.Objects {
-			maps.Maps[stage].Objects[i].positionX = o.X + float64(ScreenWidth / 2 - (s.tick * 4))
+			maps.Maps[stage].Objects[i].positionX = o.X + float64(ScreenWidth / 2 - (tick * 4))
 			if isCollision(
 				Point{o.collisionLeftUp.X + maps.Maps[stage].Objects[i].positionX, playerFootY - o.Y + o.collisionLeftUp.Y},
 				o.collisionRightDown,
@@ -115,7 +115,7 @@ func (s *Battle) Update(g *Game)  {
 				bgmPlayer.Pause()
 			}
 			g.SceneType.Type = SceneGameOver
-		} else if s.tick > 2300 {
+		} else if tick > 2300 {
 			if bgmPlayer.IsPlaying() {
 				bgmPlayer.Pause()
 			}
@@ -127,8 +127,8 @@ func (s *Battle) Update(g *Game)  {
 func (s *Battle) Draw(screen *ebiten.Image)  {
 	bgFirstOption := &ebiten.DrawImageOptions{}
 	bgSecondOption := &ebiten.DrawImageOptions{}
-	bgFirstOption.GeoM.Translate(s.backgroundX, 0)
-	bgSecondOption.GeoM.Translate(s.backgroundX + float64(ScreenWidth), 0)
+	bgFirstOption.GeoM.Translate(backgroundX, 0)
+	bgSecondOption.GeoM.Translate(backgroundX + float64(ScreenWidth), 0)
 	screen.DrawImage(backgroundImage, bgFirstOption)
 	screen.DrawImage(backgroundImage, bgSecondOption)
 
@@ -158,7 +158,7 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 	playerOption := &ebiten.DrawImageOptions{}
 	playerOption.GeoM.Translate(player.leftUp.X, player.leftUp.Y)
 
-	i := (s.tick / 5) % playerFrameNum
+	i := (tick / 5) % playerFrameNum
 	sx, sy := i * playerFrameWidth, int(player.frame0.Y)
 	enemySx, enemySy := i * playerFrameWidth, playerFrame0Y
 
@@ -205,15 +205,15 @@ func (s *Battle) Draw(screen *ebiten.Image)  {
 	// )
 
 	countDownOption := &ebiten.DrawImageOptions{}
-	if s.tick / 60 < 1 {
+	if tick / 60 < 1 {
 		screen.DrawImage(countDown3Image, countDownOption)
-	} else if s.tick / 60 < 2 {
+	} else if tick / 60 < 2 {
 		screen.DrawImage(countDown2Image, countDownOption)
-	} else if s.tick / 60 < 3 {
+	} else if tick / 60 < 3 {
 		screen.DrawImage(countDown1Image, countDownOption)
 	}
 
-	//ebitenutil.DebugPrint(screen, fmt.Sprintf("tick:%d\nFPS: %.2f\nPlayeFrameSizeY: %.2f\nPlayerLeftUp: %.2f", s.tick, ebiten.CurrentFPS(), player.frameSize.Y, player.leftUp.Y))
+	//ebitenutil.DebugPrint(screen, fmt.Sprintf("tick:%d\nFPS: %.2f\nPlayeFrameSizeY: %.2f\nPlayerLeftUp: %.2f", tick, ebiten.CurrentFPS(), player.frameSize.Y, player.leftUp.Y))
 
 	displayRectangle := text.BoundString(Font, fmt.Sprintf("Score: %d", score))
 	text.Draw(screen, fmt.Sprintf("Score: %d", score), Font, ScreenWidth - displayRectangle.Dx() - 10, displayRectangle.Dy() + 10, color.White)
