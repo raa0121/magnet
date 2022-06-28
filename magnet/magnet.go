@@ -4,6 +4,7 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 const (
@@ -24,6 +25,19 @@ type Point struct {
 }
 
 func (g *Game) Update() error {
+	if inpututil.IsKeyJustPressed(ebiten.KeyF11) {
+		if ebiten.IsFullscreen() {
+			ebiten.SetFullscreen(false)
+			fullScreenWidth, fullScreenHeight := ebiten.ScreenSizeInFullscreen()
+			if fullScreenWidth <= ScreenWidth || fullScreenHeight <= ScreenHeight {
+				ebiten.SetWindowSize(ScreenWidth / 2, ScreenHeight / 2)
+			} else {
+				ebiten.SetWindowSize(ScreenWidth, ScreenHeight)
+			}
+		} else {
+			ebiten.SetFullscreen(true)
+		}
+	}
 	switch g.SceneType.Type {
 	case SceneTitle:
 		g.Title.Update(g)
@@ -71,8 +85,8 @@ func NewGame() (*Game, error) {
 }
 
 func isCollision(objLeftUp, objSize Point) bool {
-	if math.Abs((player.collisionLeftUp.X + player.collisionRightDown.X / 2) - (objLeftUp.X + objSize.X / 2)) < player.collisionRightDown.X / 2 + objSize.X / 2 &&
-		math.Abs((player.collisionLeftUp.Y + player.collisionRightDown.Y / 2) - (objLeftUp.Y + objSize.Y / 2)) < player.collisionRightDown.Y / 2 + objSize.Y / 2 {
+	if math.Abs((player.leftUp.X + player.collisionLeftUp.X + (player.collisionRightDown.X / 2)) - (objLeftUp.X + objSize.X / 2)) < player.collisionRightDown.X / 2 + objSize.X / 2 &&
+		math.Abs((player.leftUp.Y + player.collisionLeftUp.Y + (player.collisionRightDown.Y / 2)) - (objLeftUp.Y + objSize.Y / 2)) < player.collisionRightDown.Y / 2 + objSize.Y / 2 {
 			return true
 		}
 	return false

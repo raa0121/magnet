@@ -17,6 +17,7 @@ var (
 	failPlayer *audio.Player
 	slidePlayer *audio.Player
 	damagePlayer *audio.Player
+	countDownPlayer *audio.Player
 )
 
 func init() {
@@ -26,6 +27,7 @@ func init() {
 	failPLayerInit()
 	slidePLayerInit()
 	damagePLayerInit()
+	countDownPlayerInit()
 }
 
 func bgmPlayerInit() {
@@ -98,6 +100,21 @@ func damagePLayerInit() {
 		log.Fatal(err)
 	}
 	damagePlayer, err = audio.NewPlayer(audioContext, voice)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func countDownPlayerInit() {
+	b, err := fs.ReadFile(resources.Ses, "CountDown.mp3")
+	if err != nil {
+		log.Fatal(err)
+	}
+	voice, err := mp3.Decode(audioContext, bytes.NewReader(b))
+	if err != nil {
+		log.Fatal(err)
+	}
+	countDownPlayer, err = audio.NewPlayer(audioContext, voice)
 	if err != nil {
 		log.Fatal(err)
 	}

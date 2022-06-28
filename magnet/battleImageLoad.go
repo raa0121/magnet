@@ -23,6 +23,9 @@ var (
 	objct3Image *ebiten.Image
 	objct4Image *ebiten.Image
 	collisionImage *ebiten.Image
+	countDown1Image *ebiten.Image
+	countDown2Image *ebiten.Image
+	countDown3Image *ebiten.Image
 	Font font.Face
 )
 
@@ -35,7 +38,10 @@ func init() {
 	object2ImageInit()
 	object3ImageInit()
 	object4ImageInit()
-	collisionImageInit()
+	//collisionImageInit()
+	countDown1ImageInit()
+	countDown2ImageInit()
+	countDown3ImageInit()
 	fontInit()
 }
 
@@ -169,6 +175,42 @@ func collisionImageInit() {
 		log.Fatal(err)
 	}
 	collisionImage = ebiten.NewImageFromImage(p)
+}
+
+func countDown1ImageInit() {
+	b, err := resources.Images.Open("count_down1.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+	p, err := png.Decode(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	countDown1Image = ebiten.NewImageFromImage(p)
+}
+
+func countDown2ImageInit() {
+	b, err := resources.Images.Open("count_down2.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+	p, err := png.Decode(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	countDown2Image = ebiten.NewImageFromImage(p)
+}
+
+func countDown3ImageInit() {
+	b, err := resources.Images.Open("count_down3.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+	p, err := png.Decode(b)
+	if err != nil {
+		log.Fatal(err)
+	}
+	countDown3Image = ebiten.NewImageFromImage(p)
 }
 
 func fontInit() {

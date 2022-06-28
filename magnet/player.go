@@ -32,7 +32,7 @@ func init() {
 		(playerFootY - player.frameSize.Y),
 	}
 	player.collisionLeftUp = Point{60, 0}
-	player.collisionRightDown = Point{200, 240}
+	player.collisionRightDown = Point{200, 235}
 
 	player.objectHit = make([][]bool, len(maps.Maps))
 	for i, m := range maps.Maps {

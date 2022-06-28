@@ -10,12 +10,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fullScreenWidth, fullScreenHeight := ebiten.ScreenSizeInFullscreen()
-	if fullScreenWidth <= magnet.ScreenWidth || fullScreenHeight <= magnet.ScreenHeight {
-		ebiten.SetWindowSize(magnet.ScreenWidth / 2, magnet.ScreenHeight / 2)
-	} else {
-		ebiten.SetWindowSize(magnet.ScreenWidth, magnet.ScreenHeight)
-	}
+	ebiten.SetFullscreen(true)
 	ebiten.SetWindowTitle("magnet")
 	if err := ebiten.RunGame(game); err != nil {
 		panic(err)

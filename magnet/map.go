@@ -48,27 +48,25 @@ func mapInit() {
 	}
 	for i, m := range maps.Maps {
 		for j, o := range m.Objects{
+			maps.Maps[i].Objects[j].X += (ScreenWidth / 2) + 180
+			maps.Maps[i].Objects[j].positionX = o.X + (ScreenWidth / 2) + 180
 			switch o.ObjectType {
 			case 1:
 				maps.Maps[i].Objects[j].Y = object1LeftUp
 				maps.Maps[i].Objects[j].collisionLeftUp = Point{20, 20}
 				maps.Maps[i].Objects[j].collisionRightDown = Point{225, 225}
-				maps.Maps[i].Objects[j].positionX = 0.0
 			case 2:
 				maps.Maps[i].Objects[j].Y = object2LeftUp
 				maps.Maps[i].Objects[j].collisionLeftUp = Point{50, 100}
 				maps.Maps[i].Objects[j].collisionRightDown = Point{195, 256}
-				maps.Maps[i].Objects[j].positionX = 0.0
 			case 3:
 				maps.Maps[i].Objects[j].Y = object3LeftUp
 				maps.Maps[i].Objects[j].collisionLeftUp = Point{0, 0}
 				maps.Maps[i].Objects[j].collisionRightDown = Point{248, 118}
-				maps.Maps[i].Objects[j].positionX = 0.0
 			case 4:
 				maps.Maps[i].Objects[j].Y = object4LeftUp
 				maps.Maps[i].Objects[j].collisionLeftUp = Point{0, 0}
 				maps.Maps[i].Objects[j].collisionRightDown = Point{1122, 586}
-				maps.Maps[i].Objects[j].positionX = 0.0
 			}
 		}
 	}
