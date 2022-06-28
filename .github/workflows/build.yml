@@ -30,7 +30,7 @@ jobs:
         go-version: 1.17
     - name: Build Windows exe
       shell: bash
-      run: go build
+      run: go build -o magnet.exe
     - name: Upload Windows exe
       uses: actions/upload-artifact@v2.2.4
       with:
@@ -51,10 +51,10 @@ jobs:
         go-version: 1.17
     - name: Build Mac exe
       shell: bash
-      run: go build
+      run: go build -o magnet.bin
     - name: Tar it up
       shell: bash
-      run: tar -zcvf magnet-mac.tar.gz magnet LICENSE
+      run: tar -zcvf magnet-mac.tar.gz magnet.bin LICENSE
     - name: Upload Mac exe
       uses: actions/upload-artifact@v2.2.4
       with:
@@ -76,10 +76,10 @@ jobs:
       run: sudo apt-get -y install libgl1-mesa-dev xorg-dev libasound2-dev
     - name: Build Linux exe
       shell: bash
-      run: go build -v
+      run: go build -v -o magnet.bin
     - name: Tar it up
       shell: bash
-      run: tar -zcvf magnet-lin.tar.gz magnet LICENSE
+      run: tar -zcvf magnet-lin.tar.gz magnet.bin LICENSE
     - name: Upload Linux exe
       uses: actions/upload-artifact@v2.2.4
       with:
