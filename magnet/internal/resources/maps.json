@@ -21,6 +21,14 @@
         {
           "x": 3800,
           "object_type": 4
+        },
+        {
+          "x": 6200,
+          "object_type": 2
+        },
+        {
+          "x": 7000,
+          "object_type": 1
         }
       ]
     }

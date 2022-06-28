@@ -96,7 +96,7 @@ func (s *Battle) Update(g *Game)  {
 				o.collisionRightDown,
 			) && !player.objectHit[stage][i] {
 				player.objectHit[stage][i] = true
-				enemyX += 90
+				enemyX += 120
 				if !damagePlayer.IsPlaying() {
 					damagePlayer.SetVolume(0.8)
 					damagePlayer.Rewind()
@@ -109,6 +109,9 @@ func (s *Battle) Update(g *Game)  {
 				score += 100
 				maps.Maps[stage].Objects[i].isScored = true
 			}
+		}
+		if enemyX >= player.leftUp.X {
+			g.SceneType.Type = SceneGameOver
 		}
 	}
 }
