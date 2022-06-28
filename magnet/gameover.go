@@ -18,6 +18,7 @@ func (s *GameOver) Update(g *Game)  {
 		enemyX = 0
 		tick = 0
 		backgroundX = 0
+		isStart = false
 		playerInit()
 		mapInit()
 		g.SceneType.Type = SceneTitle
