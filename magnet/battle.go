@@ -6,7 +6,7 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	//"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text"
 )
@@ -111,6 +111,14 @@ func (s *Battle) Update(g *Game)  {
 			}
 		}
 		if enemyX >= player.leftUp.X {
+			if bgmPlayer.IsPlaying() {
+				bgmPlayer.Pause()
+			}
+			g.SceneType.Type = SceneGameOver
+		} else if s.tick > 2300 {
+			if bgmPlayer.IsPlaying() {
+				bgmPlayer.Pause()
+			}
 			g.SceneType.Type = SceneGameOver
 		}
 	}
