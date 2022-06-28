@@ -152,7 +152,7 @@ jobs:
       env:
         BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
         CHANNEL: windows
-        ITCH_GAME: magnet
+        ITCH_GAME: escape-from-magnet
         ITCH_USER: raa0121
         PACKAGE: magnet.exe
         VERSION: ${{github.ref_name}}
@@ -173,7 +173,7 @@ jobs:
       env:
         BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
         CHANNEL: mac
-        ITCH_GAME: magnet
+        ITCH_GAME: escape-from-magnet
         ITCH_USER: raa0121
         PACKAGE: magnet
         VERSION: ${{github.ref_name}}
@@ -194,7 +194,7 @@ jobs:
       env:
         BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
         CHANNEL: linux
-        ITCH_GAME: magnet
+        ITCH_GAME: escape-from-magnet
         ITCH_USER: raa0121
         PACKAGE: magnet
         VERSION: ${{github.ref_name}}
@@ -212,7 +212,7 @@ jobs:
       env:
         BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
         CHANNEL: web
-        ITCH_GAME: magnet
+        ITCH_GAME: escape-from-magnet
         ITCH_USER: raa0121
         PACKAGE: dist/web
         VERSION: ${{github.ref_name}}
